@@ -80,8 +80,8 @@ public:
 #ifdef _WIN32
 	// Return as Wide char
 	// Deallocate with DeallocWideChar
-	WCHAR * ToWideChar(void);
-	void DeallocWideChar(WCHAR * w);
+	const WCHAR * ToWideChar(void);
+	void DeallocWideChar(const WCHAR * w);
 
 	void FromWideChar(const wchar_t *source);
 	static RakNet::RakString FromWideChar_S(const wchar_t *source);

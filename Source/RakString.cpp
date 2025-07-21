@@ -506,7 +506,7 @@ const WCHAR * RakString::ToWideChar(void)
 
 	return pszUTF16;
 }
-void RakString::DeallocWideChar(WCHAR * w)
+void RakString::DeallocWideChar(const WCHAR * w)
 {
 	RakNet::OP_DELETE_ARRAY(w,__FILE__,__LINE__);
 }
