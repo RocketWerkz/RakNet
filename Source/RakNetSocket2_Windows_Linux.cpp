@@ -16,15 +16,14 @@
 #define RAKNETSOCKET2_WINDOWS_LINUX_CPP
 
 #if !defined(WINDOWS_STORE_RT) && !defined(__native_client__)
+
+#if RAKNET_SUPPORT_IPV6==1
 void PrepareAddrInfoHints2(addrinfo *hints)
 {
 	memset(hints, 0, sizeof (addrinfo)); // make sure the struct is empty
 	hints->ai_socktype = SOCK_DGRAM; // UDP sockets
 	hints->ai_flags = AI_PASSIVE;     // fill in my IP for me
 }
-
-#if RAKNET_SUPPORT_IPV6==1
-
 
 void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] )
 {
@@ -68,6 +67,13 @@ void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_I
 #include <netdb.h>
 #endif
 #ifdef NEW_IP_CODE
+
+void PrepareAddrInfoHints2(addrinfo *hints)
+{
+	memset(hints, 0, sizeof (addrinfo)); // make sure the struct is empty
+	hints->ai_socktype = SOCK_DGRAM; // UDP sockets
+	hints->ai_flags = AI_PASSIVE;     // fill in my IP for me
+}
 
 // ARKB: Taken GetMyIP_Windows_Linux_IPV4And6 and made to work only with IPV4.
 // This uses getaddrinfo which is more modern (and works on mac) than gethostbyname
