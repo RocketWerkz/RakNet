@@ -16,15 +16,15 @@
 #define RAKNETSOCKET2_WINDOWS_LINUX_CPP
 
 #if !defined(WINDOWS_STORE_RT) && !defined(__native_client__)
-
-#if RAKNET_SUPPORT_IPV6==1
-
 void PrepareAddrInfoHints2(addrinfo *hints)
 {
 	memset(hints, 0, sizeof (addrinfo)); // make sure the struct is empty
 	hints->ai_socktype = SOCK_DGRAM; // UDP sockets
 	hints->ai_flags = AI_PASSIVE;     // fill in my IP for me
 }
+
+#if RAKNET_SUPPORT_IPV6==1
+
 
 void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] )
 {
@@ -67,10 +67,48 @@ void GetMyIP_Windows_Linux_IPV4And6( SystemAddress addresses[MAXIMUM_NUMBER_OF_I
 #if (defined(__GNUC__)  || defined(__GCCXML__)) && !defined(__WIN32__)
 #include <netdb.h>
 #endif
+#ifdef NEW_IP_CODE
+
+// ARKB: Taken GetMyIP_Windows_Linux_IPV4And6 and made to work only with IPV4.
+// This uses getaddrinfo which is more modern (and works on mac) than gethostbyname
+// which failed on mac.
+void GetMyIP_Windows_Linux_IPV4Better( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] )
+{
+	int idx=0;
+	char ac[ 80 ];
+	int err = gethostname( ac, sizeof( ac ) );
+	RakAssert(err != -1);
+
+	struct addrinfo hints;
+	struct addrinfo *servinfo=0, *aip;  // will point to the results
+	PrepareAddrInfoHints2(&hints);
+	getaddrinfo(ac, "", &hints, &servinfo);
+
+	int addressIndex = 0;
+	for (idx=0, aip = servinfo; aip != NULL && idx < MAXIMUM_NUMBER_OF_INTERNAL_IDS; aip = aip->ai_next, idx++)
+	{
+		if (aip->ai_family == AF_INET)
+		{
+			const sockaddr_in *ipv4 = (struct sockaddr_in *)aip->ai_addr;
+			memcpy(&addresses[addressIndex++].address.addr4,ipv4,sizeof(sockaddr_in));
+		}
+	}
+	freeaddrinfo(servinfo); // free the linked-list
+
+	while (addressIndex < MAXIMUM_NUMBER_OF_INTERNAL_IDS)
+	{
+		addresses[addressIndex++]=UNASSIGNED_SYSTEM_ADDRESS;
+	}
+}
+#endif
+
+
 void GetMyIP_Windows_Linux_IPV4( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTERNAL_IDS] )
 {
-
-
+#ifdef NEW_IP_CODE
+	GetMyIP_Windows_Linux_IPV4Better(addresses);
+	return;
+#else
 
 	int idx=0;
 	char ac[ 80 ];
@@ -98,7 +136,7 @@ void GetMyIP_Windows_Linux_IPV4( SystemAddress addresses[MAXIMUM_NUMBER_OF_INTER
 		addresses[idx]=UNASSIGNED_SYSTEM_ADDRESS;
 		idx++;
 	}
-
+#endif
 }
 
 #endif // RAKNET_SUPPORT_IPV6==1
