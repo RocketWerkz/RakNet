@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 
 option( RAKNET_ENABLE_EXTENSIONS 				"Enable extension projects that might need specific dependencies." TRUE )
 option( RAKNET_EXTENSION_USEMYSQL 				"Enable extensions using MySQL" 		TRUE )
@@ -16,13 +16,13 @@ add_subdirectory("bzip2-1.0.6")
 add_subdirectory("XML")
 
 if( RAKNET_ENABLE_EXTENSIONS )
-	IF(RAKNET_EXTENSION_USEMYSQL ) 
+	IF(RAKNET_EXTENSION_USEMYSQL )
 		add_subdirectory(MySQLInterface)
-	ENDIF() 
+	ENDIF()
 
-	IF(RAKNET_EXTENSION_USEPOSTGRESQL) 
+	IF(RAKNET_EXTENSION_USEPOSTGRESQL)
 		add_subdirectory(PostgreSQLInterface)
-	ENDIF() 
+	ENDIF()
 
 endif()
 
@@ -37,34 +37,31 @@ IF (WIN32 AND NOT UNIX)
 	add_subdirectory(speex-1.1.12)
 ENDIF(WIN32 AND NOT UNIX)
 
-if( RAKNET_ENABLE_EXTENSIONS ) 
+if( RAKNET_ENABLE_EXTENSIONS )
 
-	IF(RAKNET_EXTENSION_USEBOOST) 
+	IF(RAKNET_EXTENSION_USEBOOST)
 		add_subdirectory(RPC3)
-	ENDIF() 
+	ENDIF()
 
 endif()
 
 IF(NOT WIN32 AND UNIX)
-	IF(RAKNET_EXTENSION_USESPEEX AND RAKNET_ENABLE_EXTENSIONS) 
+	IF(RAKNET_EXTENSION_USESPEEX AND RAKNET_ENABLE_EXTENSIONS)
 		FINDSPEEX()
 		include_directories(${RAKNETHEADERFILES} ${SPEEX_INCLUDE_DIRS})
 		add_library(LibRakVoice STATIC RakVoice.h RakVoice.cpp)
 		target_link_libraries(LibRakVoice ${RAKNET_COMMON_LIBS} ${SPEEX_LIBRARIES})
-	ENDIF() 
+	ENDIF()
 ENDIF()
 
 if( RAKNET_ENABLE_EXTENSIONS )
 
-	IF( RAKNET_EXTENSION_USEIRRLICHT AND RAKNET_EXTENSION_USEIRRKLANG ) 
+	IF( RAKNET_EXTENSION_USEIRRLICHT AND RAKNET_EXTENSION_USEIRRKLANG )
 		add_subdirectory(IrrlichtDemo)
 	ENDIF()
 
-	IF( RAKNET_EXTENSION_USEOGRE3D ) 
+	IF( RAKNET_EXTENSION_USEOGRE3D )
 		add_subdirectory(Ogre3DInterpDemo)
 	ENDIF()
 
 endif()
-
-
-

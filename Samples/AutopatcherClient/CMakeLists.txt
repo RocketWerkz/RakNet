@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 project(AutopatcherClient)
 
 set(Autopatcher_SOURCE_DIR ${RakNet_SOURCE_DIR}/DependentExtensions/Autopatcher)
@@ -19,5 +19,3 @@ add_executable(AutopatcherClient "AutopatcherClientTest.cpp" ${AUTOSRC} ${BZSRC}
 target_link_libraries(AutopatcherClient ${RAKNET_COMMON_LIBS})
 
 ##VSUBFOLDER(AutopatcherClient "Samples/AutoPatcher/Client")
-
-

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 GETCURRENTFOLDER()
 FINDIRRLICHT()
 IF(WIN32 AND NOT UNIX)
@@ -7,7 +7,7 @@ IF(WIN32 AND NOT UNIX)
 	FILE(GLOB ALL_HEADER_SRCS *.h "${RakNet_SOURCE_DIR}/Samples/PHPDirectoryServer2/PHPDirectoryServer2.h")
 	FILE(GLOB READMES readme.txt Specification.txt)
 	FIXCOMPILEOPTIONS()
-	include_directories(${RAKNETHEADERFILES} ./ ${IRRLICHT_INCLUDE_DIR}) 
+	include_directories(${RAKNETHEADERFILES} ./ ${IRRLICHT_INCLUDE_DIR})
 	add_executable(${current_folder} WIN32 ${ALL_CPP_SRCS} ${ALL_HEADER_SRCS}  ${READMES})
 	target_link_libraries(${current_folder} ${RAKNET_COMMON_LIBS})
 	set_target_properties(${current_folder} PROPERTIES PROJECT_GROUP "Samples/3D Demos")
@@ -18,13 +18,7 @@ ELSE(WIN32 AND NOT UNIX)
 	FILE(GLOB ALL_HEADER_SRCS *.h "${RakNet_SOURCE_DIR}/Samples/PHPDirectoryServer2/PHPDirectoryServer2.h")
 	FILE(GLOB READMES readme.txt Specification.txt)
 	FIXCOMPILEOPTIONS()
-	include_directories(${RAKNETHEADERFILES} ./ ${IRRLICHT_INCLUDE_DIR} ${IRRKLANG_INCLUDE_DIR}) 
+	include_directories(${RAKNETHEADERFILES} ./ ${IRRLICHT_INCLUDE_DIR} ${IRRKLANG_INCLUDE_DIR})
 	add_executable(${current_folder} WIN32 ${ALL_CPP_SRCS} ${ALL_HEADER_SRCS}  ${READMES})
 	target_link_libraries(${current_folder} ${RAKNET_COMMON_LIBS} ${IRRLICHT_LIBRARIES} ${IRRKLANG_LIBRARIES})
 ENDIF(WIN32 AND NOT UNIX)
-
-
-
-
-
-

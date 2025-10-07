@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 project(AutopatcherClientGFx3)
 IF(WIN32 AND NOT UNIX)
 	FINDD3D()
@@ -19,9 +19,3 @@ IF(WIN32 AND NOT UNIX)
 	target_link_libraries(AutopatcherClientGFx3 ${RAKNET_COMMON_LIBS} ${D3D_LIBRARIES} winmm.lib imm32.lib ${SCALEGFX_DEBUG_LIBRARIES} ${SCALEGFX_LIBRARIES})
 	VSUBFOLDER(AutopatcherClientGFx3 "Samples/AutoPatcher/Client")
 ENDIF(WIN32 AND NOT UNIX)
-
-
-
-
-
-

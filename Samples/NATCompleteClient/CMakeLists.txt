@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 GETCURRENTFOLDER()
 SET(EXTRALIBS "") #Extra libraries, we have none
 #note the .h files are included so they show up in the windows project
@@ -8,8 +8,3 @@ SET(EXTRASOURCES ${UPNP_FILES} ${XML_FILES}) #set the grabbed files as extra sou
 SET(EXTRAINCLUDES ${RakNet_SOURCE_DIR}/DependentExtensions/XML  UPNP_FILES ${RakNet_SOURCE_DIR}/DependentExtensions/UPNP)#add the include directories
 STANDARDSUBPROJECTWITHOPTIONSSET(${current_folder})
 VSUBFOLDER(${current_folder} "Samples/NAT Punchthrough")
-
-
-
-
-

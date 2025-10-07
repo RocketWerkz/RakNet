@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.22)
 project(AutopatcherServer)
 
 IF(WIN32 AND NOT UNIX)
@@ -8,19 +8,12 @@ IF(WIN32 AND NOT UNIX)
 	SOURCE_GROUP(BZip FILES ${BZSRC})
 	SOURCE_GROUP("Source Files" FILES ${AUTOSRC})
 	SOURCE_GROUP(Main "AutopatcherServerTest.cpp")
-	include_directories(${RAKNETHEADERFILES} ./ ${AutopatcherPostgreRepository_SOURCE_DIR} ${PostgreSQLInterface_SOURCE_DIR} ${Autopatcher_SOURCE_DIR} ${BZip2_SOURCE_DIR}) 
+	include_directories(${RAKNETHEADERFILES} ./ ${AutopatcherPostgreRepository_SOURCE_DIR} ${PostgreSQLInterface_SOURCE_DIR} ${Autopatcher_SOURCE_DIR} ${BZip2_SOURCE_DIR})
 	add_executable(AutopatcherServer_PostgreSQL "AutopatcherServerTest.cpp" ${AUTOSRC} ${BZSRC} readme.txt)
 	target_link_libraries(AutopatcherServer_PostgreSQL ${RAKNET_COMMON_LIBS} AutopatcherPostgreRepository)
 	VSUBFOLDER(AutopatcherServer_PostgreSQL "Samples/AutoPatcher/Server/PostgreSQL")
 ELSE(WIN32 AND NOT UNIX)
-	include_directories(${RAKNETHEADERFILES} ./ ${AutopatcherPostgreRepository_SOURCE_DIR} ${PostgreSQLInterface_SOURCE_DIR} ${Autopatcher_SOURCE_DIR}) 
+	include_directories(${RAKNETHEADERFILES} ./ ${AutopatcherPostgreRepository_SOURCE_DIR} ${PostgreSQLInterface_SOURCE_DIR} ${Autopatcher_SOURCE_DIR})
 	add_executable(AutopatcherServer_PostgreSQL "AutopatcherServerTest.cpp")
 	target_link_libraries(AutopatcherServer_PostgreSQL ${RAKNET_COMMON_LIBS} LibAutopatcher AutopatcherPostgreRepository LibPostgreSQLInterface)
 ENDIF(WIN32 AND NOT UNIX)
-
-
-
-
-
-
-
