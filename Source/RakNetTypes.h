@@ -28,8 +28,10 @@
 #include "XBox360Includes.h"
 #include "SocketIncludes.h"
 
+#include <cstdio>
 
 
+void log(const char *c);
 
 
 namespace RakNet {
@@ -384,8 +386,13 @@ struct RAK_DLL_EXPORT AddressOrGUID
 	AddressOrGUID() {}
 	AddressOrGUID( const AddressOrGUID& input )
 	{
+		log("Copying address or guid\n");
+//		printf("input address:%p input.rakNetGuid:%llu ", (void*)&input, (unsigned long long)input.rakNetGuid.g); fflush(stdout);
+		//printf("input address:%p", (void*)&input); fflush(stdout);
 		rakNetGuid=input.rakNetGuid;
+		log("Copying systemaddress\n");
 		systemAddress=input.systemAddress;
+		log("Done\n");
 	}
 	AddressOrGUID( const SystemAddress& input )
 	{

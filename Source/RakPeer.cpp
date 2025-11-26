@@ -25,6 +25,8 @@
 #include <unistd.h>
 #endif
 
+void log(const char *c);
+
 // #if defined(new)
 // #pragma push_macro("new")
 // #undef new
@@ -1307,6 +1309,7 @@ uint32_t RakPeer::IncrementNextSendReceipt(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t RakPeer::Send( const char *data, const int length, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast, uint32_t forceReceiptNumber )
 {
+	log("In Send");
 #ifdef _DEBUG
 	RakAssert( data && length > 0 );
 #endif
@@ -4002,9 +4005,30 @@ unsigned int RakPeer::FirstFreeRemoteSystemLookupIndex(const SystemAddress &sa) 
 	return index;
 }
 */
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+FILE* handle;
+
+void log(const char *c)
+{
+  if(handle == 0){
+    handle = fopen("out.txt","w");
+  }
+
+  fprintf(handle, "%s\n", c);
+  printf("%s\n", c);
+  fflush(stdout);
+
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool RakPeer::IsLoopbackAddress(const AddressOrGUID &systemIdentifier, bool matchPort) const
 {
+    //log(systemIdentifier.systemAddress.ToString(true));
+
+	
 	if (systemIdentifier.rakNetGuid!=UNASSIGNED_RAKNET_GUID)
 		return systemIdentifier.rakNetGuid==myGuid;
 
