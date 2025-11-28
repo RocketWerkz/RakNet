@@ -1334,6 +1334,7 @@ uint32_t RakPeer::Send( const char *data, const int length, PacketPriority prior
 
 	if (broadcast==false && IsLoopbackAddress(systemIdentifier,true))
 	{
+		log("Sending on loopback");
 		SendLoopback(data,length);
 
 		if (reliability>=UNRELIABLE_WITH_ACK_RECEIPT)
@@ -1349,6 +1350,7 @@ uint32_t RakPeer::Send( const char *data, const int length, PacketPriority prior
 		return usedSendReceipt;
 	}
 
+		log("Sending buffered");
 	SendBuffered(data, length*8, priority, reliability, orderingChannel, systemIdentifier, broadcast, RemoteSystemStruct::NO_ACTION, usedSendReceipt);
 
 	return usedSendReceipt;
@@ -2421,6 +2423,9 @@ const RakNetGUID& RakPeer::GetGuidFromSystemAddress( const SystemAddress input )
 
 unsigned int RakPeer::GetSystemIndexFromGuid( const RakNetGUID input ) const
 {
+	printf("RakPeer::GetSystemIndexFromGUID  input:%s\n", input.ToString());
+	printf("RakPeer::GetSystemIndexFromGUID  myguid:%s\n", myGuid.ToString());
+
 	if (input==UNASSIGNED_RAKNET_GUID)
 		return (unsigned int) -1;
 
@@ -2433,14 +2438,18 @@ unsigned int RakPeer::GetSystemIndexFromGuid( const RakNetGUID input ) const
 	unsigned int i;
 	for ( i = 0; i < maximumNumberOfPeers; i++ )
 	{
+		printf("RakPeer::GetSystemIndexFromGUID  checking peer %s\n", remoteSystemList[i].guid.ToString());
 		if (remoteSystemList[ i ].guid == input )
 		{
 			// Set the systemIndex so future lookups will be fast
 			remoteSystemList[i].guid.systemIndex = (SystemIndex) i;
 
+			fflush(stdout);	
 			return i;
 		}
 	}
+	printf("RakPeer::GetSystemIndexFromGUID  ran out of peers to check\n");
+	fflush(stdout);	
 
 	return (unsigned int) -1;
 }
@@ -4026,8 +4035,10 @@ void log(const char *c)
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool RakPeer::IsLoopbackAddress(const AddressOrGUID &systemIdentifier, bool matchPort) const
 {
-    //log(systemIdentifier.systemAddress.ToString(true));
-
+	log("IsLoopbackAddress");
+	printf("systemAddress %s\n", systemIdentifier.systemAddress.ToString(true)); fflush(stdout);
+	printf("rakNetGuid  %s\n", systemIdentifier.rakNetGuid.ToString()); fflush(stdout);
+	printf("myguid %s\n", myGuid.ToString()); fflush(stdout);
 	
 	if (systemIdentifier.rakNetGuid!=UNASSIGNED_RAKNET_GUID)
 		return systemIdentifier.rakNetGuid==myGuid;
@@ -4324,6 +4335,16 @@ bool RakPeer::SendImmediate( char *data, BitSize_t numberOfBitsToSend, PacketPri
 		remoteSystemIndex=GetSystemIndexFromGuid(systemIdentifier.rakNetGuid);
 	else
 		remoteSystemIndex=(unsigned int) -1;
+
+	printf("RakPeer::SendImmediate: systemIdentifier.rakNetGuid: %s\n", systemIdentifier.rakNetGuid.ToString());
+	printf("RakPeer::SendImmediate: systemIdentifier.systemAddress: %s\n", systemIdentifier.systemAddress.ToString(true));
+	printf("RakPeer::SendImmediate: UNASSIGNED GUID: %lu\n", UNASSIGNED_RAKNET_GUID.g);
+	printf("RakPeer::SendImmediate: UNASSIGNED SYSTEMADDRESS: %lu\n", UNASSIGNED_SYSTEM_ADDRESS.ToString(true));
+	printf("RakPeer::SendImmediate: remoteIndex:%d\n", remoteSystemIndex);
+	printf("RakPeer::SendImmediate: systemIdentifier.rakNetGuid == UNASSIGNED? : %d\n", (int)(systemIdentifier.rakNetGuid == UNASSIGNED_RAKNET_GUID));
+	printf("RakPeer::SendImmediate: systemIdentifier.systemAddress == UNASSIGNED? : %d\n", (int)(systemIdentifier.systemAddress == UNASSIGNED_SYSTEM_ADDRESS));
+
+	fflush(stdout);
 
 	// 03/06/06 - If broadcast is false, use the optimized version of GetIndexFromSystemAddress
 	if (broadcast==false)
@@ -5642,8 +5663,11 @@ bool RakPeer::RunUpdateCycle(BitStream &updateBitStream )
 
 	while ((bcs=bufferedCommands.PopInaccurate())!=0)
 	{
+			log(bcs->systemIdentifier.ToString(true));
+			printf("Popped %d\n", bcs->command);fflush(stdout);
 		if (bcs->command==BufferedCommandStruct::BCS_SEND)
 		{
+			printf("broadcast:%d\n", (int)bcs->broadcast);fflush(stdout);
 			// GetTime is a very slow call so do it once and as late as possible
 			if (timeNS==0)
 			{
