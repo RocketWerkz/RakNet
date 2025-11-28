@@ -252,6 +252,7 @@ struct RAK_DLL_EXPORT SystemAddress
 	// NOT THREADSAFE
 	// portDelineator should not be '.', ':', '%', '-', '/', a number, or a-f
 	const char *ToString(bool writePort=true, char portDelineator='|') const;
+	void ToStringEqual(char *dest) const;
 
 	// Return the systemAddress as a string in the format <IP>|<Port>
 	// dest must be large enough to hold the output

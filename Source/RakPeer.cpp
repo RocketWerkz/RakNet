@@ -1310,6 +1310,8 @@ uint32_t RakPeer::IncrementNextSendReceipt(void)
 uint32_t RakPeer::Send( const char *data, const int length, PacketPriority priority, PacketReliability reliability, char orderingChannel, const AddressOrGUID systemIdentifier, bool broadcast, uint32_t forceReceiptNumber )
 {
 	log("In Send");
+	printf("RakPeer::Send sin_family:%d", systemIdentifier.systemAddress.address.addr4.sin_family);
+
 #ifdef _DEBUG
 	RakAssert( data && length > 0 );
 #endif
@@ -4336,10 +4338,16 @@ bool RakPeer::SendImmediate( char *data, BitSize_t numberOfBitsToSend, PacketPri
 	else
 		remoteSystemIndex=(unsigned int) -1;
 
+	char buffer[400];
+	char bufferSI[400];
+	UNASSIGNED_SYSTEM_ADDRESS.ToStringEqual(buffer);
+	systemIdentifier.systemAddress.ToStringEqual(bufferSI);
+
 	printf("RakPeer::SendImmediate: systemIdentifier.rakNetGuid: %s\n", systemIdentifier.rakNetGuid.ToString());
 	printf("RakPeer::SendImmediate: systemIdentifier.systemAddress: %s\n", systemIdentifier.systemAddress.ToString(true));
+	printf("RakPeer::SendImmediate: systemIdentifier.systemAddress Equal: %s\n", bufferSI);
 	printf("RakPeer::SendImmediate: UNASSIGNED GUID: %lu\n", UNASSIGNED_RAKNET_GUID.g);
-	printf("RakPeer::SendImmediate: UNASSIGNED SYSTEMADDRESS: %lu\n", UNASSIGNED_SYSTEM_ADDRESS.ToString(true));
+	printf("RakPeer::SendImmediate: UNASSIGNED SYSTEMADDRESS Equal: %s\n", buffer);
 	printf("RakPeer::SendImmediate: remoteIndex:%d\n", remoteSystemIndex);
 	printf("RakPeer::SendImmediate: systemIdentifier.rakNetGuid == UNASSIGNED? : %d\n", (int)(systemIdentifier.rakNetGuid == UNASSIGNED_RAKNET_GUID));
 	printf("RakPeer::SendImmediate: systemIdentifier.systemAddress == UNASSIGNED? : %d\n", (int)(systemIdentifier.systemAddress == UNASSIGNED_SYSTEM_ADDRESS));

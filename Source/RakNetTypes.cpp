@@ -149,6 +149,15 @@ void SystemAddress::SetPortNetworkOrder(unsigned short s)
 	address.addr4.sin_port=s;
 	debugPort=ntohs(s);
 }
+
+void SystemAddress::ToStringEqual(char *dest) const {
+	//return (address.addr4.sin_family==AF_INET && address.addr4.sin_addr.s_addr==right.address.addr4.sin_addr.s_addr)
+
+	sprintf(dest, "%d %d %d ",address.addr4.sin_port, address.addr4.sin_family,address.addr4.sin_addr.s_addr);
+
+	
+}
+
 bool SystemAddress::operator==( const SystemAddress& right ) const
 {
 	return address.addr4.sin_port == right.address.addr4.sin_port && EqualsExcludingPort(right);
@@ -263,8 +272,8 @@ void SystemAddress::ToString_Old(bool writePort, char *dest, char portDelineator
 {
 	if (*this==UNASSIGNED_SYSTEM_ADDRESS)
 	{
-		strcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS");
-		return;
+	//	strcpy(dest, "UNASSIGNED_SYSTEM_ADDRESS");
+//		return;
 	}
 
 	char portStr[2];
