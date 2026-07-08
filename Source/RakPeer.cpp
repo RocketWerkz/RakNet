@@ -249,7 +249,7 @@ RakPeer::RakPeer()
 	defaultTimeoutTime=10000;
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	_packetloss=0.0;
 	_minExtraPing=0;
 	_extraPingVariance=0;
@@ -630,7 +630,7 @@ StartupResult RakPeer::Startup( unsigned int maxConnections, SocketDescriptor *s
 			remoteSystemList[ i ].connectMode=RemoteSystemStruct::NO_ACTION;
 			remoteSystemList[ i ].MTUSize = defaultMTUSize;
 			remoteSystemList[ i ].remoteSystemIndex = (SystemIndex) i;
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 			remoteSystemList[ i ].reliabilityLayer.ApplyNetworkSimulator(_packetloss, _minExtraPing, _extraPingVariance);
 #endif
 
@@ -2941,7 +2941,7 @@ void RakPeer::ReleaseSockets( DataStructures::List<RakNetSocket2* > &sockets )
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void RakPeer::ApplyNetworkSimulator( float packetloss, unsigned short minExtraPing, unsigned short extraPingVariance)
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	if (remoteSystemList)
 	{
 		unsigned short i;
@@ -2968,7 +2968,7 @@ void RakPeer::SetPerConnectionOutgoingBandwidthLimit( unsigned maxBitsPerSecond 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool RakPeer::IsNetworkSimulatorActive( void )
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	return _packetloss>0 || _minExtraPing>0 || _extraPingVariance>0;
 #else
 	return false;
