@@ -312,9 +312,9 @@ ReliabilityLayer::ReliabilityLayer()
 	timeoutTime=10000;
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	minExtraPing=extraPingVariance=0;
-	packetloss=(double) minExtraPing;	
+	packetloss=(double) minExtraPing;
 #endif
 
 
@@ -575,7 +575,7 @@ void ReliabilityLayer::FreeThreadSafeMemory( void )
 
 	outgoingPacketBuffer.Clear(true, _FILE_AND_LINE_);
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	for (unsigned i = 0; i < delayList.Size(); i++ )
 		RakNet::OP_DELETE(delayList[ i ], __FILE__, __LINE__);
 	delayList.Clear(__FILE__, __LINE__);
@@ -1701,7 +1701,7 @@ void ReliabilityLayer::Update( RakNetSocket2 *s, SystemAddress &systemAddress, i
 	timeMs=(RakNet::TimeMS) (time/(CCTimeType)1000);
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	while (delayList.Size())
 	{
 		if (delayList.Peek()->sendTime <= timeMs)
@@ -2254,7 +2254,7 @@ void ReliabilityLayer::SendBitStream( RakNetSocket2 *s, SystemAddress &systemAdd
 	length = (unsigned int) bitStream->GetNumberOfBytesUsed();
 
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	if (packetloss > 0.0)
 	{
 		if (frandomMT() < packetloss)
@@ -2366,7 +2366,7 @@ bool ReliabilityLayer::AreAcksWaiting(void)
 //-------------------------------------------------------------------------------------------------------
 void ReliabilityLayer::ApplyNetworkSimulator( double _packetloss, RakNet::TimeMS _minExtraPing, RakNet::TimeMS _extraPingVariance )
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	packetloss=_packetloss;
 	minExtraPing=_minExtraPing;
 	extraPingVariance=_extraPingVariance;

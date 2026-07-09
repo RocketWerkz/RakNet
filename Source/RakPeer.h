@@ -959,8 +959,8 @@ protected:
 
 	unsigned maxOutgoingBPS;
 
-	// Nobody would use the internet simulator in a final build.
-#ifdef _DEBUG
+	// Enabled in debug, or in any build that defines RAKNET_ENABLE_NETWORK_SIMULATOR.
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	double _packetloss;
 	unsigned short _minExtraPing, _extraPingVariance;
 #endif

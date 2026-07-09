@@ -495,7 +495,7 @@ private:
 
 	unsigned receivePacketCount;
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(RAKNET_ENABLE_NETWORK_SIMULATOR)
 	struct DataAndTime//<InternalPacket>
 	{
 		RakNetSocket2 *s;
