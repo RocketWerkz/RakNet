@@ -24,6 +24,8 @@
 using namespace RakNet;
 
 static const double UNSET_TIME_US=-1;
+// Negative-double-to-unsigned casts are UB; Apple clang 21 folds them to a trap.
+static const CCTimeType UNSET_RTO=(CCTimeType)-1;
 static const double CWND_MIN_THRESHOLD=2.0;
 static const double UNDEFINED_TRANSFER_RATE=0.0;
 /// Interval at which to update aspects of the system
@@ -218,7 +220,7 @@ bool CCRakNetUDT::ShouldSendACKs(CCTimeType curTime, CCTimeType estimatedTimeToN
 	CCTimeType rto = GetSenderRTOForACK();
 
 	// iphone crashes on comparison between double and int64 http://www.jenkinssoftware.com/forum/index.php?topic=2717.0
-	if (rto==(CCTimeType) UNSET_TIME_US)
+	if (rto==UNSET_RTO)
 	{
 		// Unknown how long until the remote system will retransmit, so better send right away
 		return true;
@@ -363,7 +365,7 @@ bool CCRakNetUDT::LessThan(DatagramSequenceNumberType a, DatagramSequenceNumberT
 CCTimeType CCRakNetUDT::GetSenderRTOForACK(void) const
 {
 	if (RTT==UNSET_TIME_US)
-		return (CCTimeType) UNSET_TIME_US;
+		return UNSET_RTO;
 	double RTTVar = maxRTT-minRTT;
 	return (CCTimeType)(RTT + RTTVarMultiple * RTTVar + SYN);
 }
