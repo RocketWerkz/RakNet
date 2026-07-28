@@ -60,12 +60,36 @@ class PluginInterface2;
 class RakNetRandom;
 typedef uint64_t reliabilityHeapWeightType;
 
+// Slot-indexed reassembly derived from SLikeNet's fix (Copyright (c) SLikeSoft UG, MIT);
+// replaces the arrival-order list left order-sensitive by upstream commit e97c4bb0.
+class SplitPacketSort
+{
+private:
+	InternalPacket **m_data;
+	size_t m_allocationSize;
+	unsigned int m_addedPacketsCount;
+	SplitPacketIdType m_packetId;
+
+public:
+	SplitPacketSort();
+	~SplitPacketSort();
+
+	void Preallocate(InternalPacket *internalPacket, const char *file, unsigned int line);
+	bool Add(InternalPacket *internalPacket);
+	bool AllPacketsAdded() const;
+	size_t GetAllocSize() const;
+	unsigned int GetNumAddedPackets() const;
+	SplitPacketIdType GetPacketId() const;
+	InternalPacket*& operator[](size_t index);
+	void Clear(const char *file, unsigned int line);
+};
+
 // int SplitPacketIndexComp( SplitPacketIndexType const &key, InternalPacket* const &data );
 struct SplitPacketChannel//<SplitPacketChannel>
 {
 	CCTimeType lastUpdateTime;
 
-	DataStructures::List<InternalPacket*> splitPacketList;
+	SplitPacketSort splitPacketList;
 
 #if PREALLOCATE_LARGE_MESSAGES==1
 	InternalPacket *returnedPacket;
@@ -539,7 +563,6 @@ private:
 	void AddToListTail(InternalPacket *internalPacket, bool modifyUnacknowledgedBytes);
 	void PopListHead(bool modifyUnacknowledgedBytes);
 	bool IsResendQueueEmpty(void) const;
-	void SortSplitPacketList(DataStructures::List<InternalPacket*> &data, unsigned int leftEdge, unsigned int rightEdge) const;
 	void SendACKs(RakNetSocket2 *s, SystemAddress &systemAddress, CCTimeType time, RakNetRandom *rnr, BitStream &updateBitStream);
 
 	DataStructures::List<InternalPacket*> packetsToSendThisUpdate;
