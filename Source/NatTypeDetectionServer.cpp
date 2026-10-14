@@ -87,30 +87,21 @@ void NatTypeDetectionServer::Startup(
 }
 void NatTypeDetectionServer::Shutdown()
 {
-	if (s1p2!=0)
+	// CreateNonblockingBoundSocket starts a receive thread on every socket, so each has to be stopped before its
+	// socket is deleted. Stopping only s3p4's left the others running, calling back into this object after it was freed.
+	RakNetSocket2 **sockets[] = {&s1p2, &s2p3, &s3p4, &s4p5};
+	for (unsigned int i = 0; i < sizeof(sockets) / sizeof(sockets[0]); ++i)
 	{
-		RakNet::OP_DELETE(s1p2,_FILE_AND_LINE_);
-		s1p2=0;
-	}
-	if (s2p3!=0)
-	{
-		RakNet::OP_DELETE(s2p3,_FILE_AND_LINE_);
-		s2p3=0;
-	}
-	if (s3p4!=0)
-	{
+		if (*sockets[i]==0)
+			continue;
+
 #if !defined(__native_client__) && !defined(WINDOWS_STORE_RT)
-		if (s3p4->IsBerkleySocket())
-			((RNS2_Berkley *)s3p4)->BlockOnStopRecvPollingThread();
+		if ((*sockets[i])->IsBerkleySocket())
+			((RNS2_Berkley *)*sockets[i])->BlockOnStopRecvPollingThread();
 #endif
 
-		RakNet::OP_DELETE(s3p4,_FILE_AND_LINE_);
-		s3p4=0;
-	}
-	if (s4p5!=0)
-	{
-		RakNet::OP_DELETE(s4p5,_FILE_AND_LINE_);
-		s4p5=0;
+		RakNet::OP_DELETE(*sockets[i],_FILE_AND_LINE_);
+		*sockets[i]=0;
 	}
 	bufferedPacketsMutex.Lock();
 	while (bufferedPackets.Size())
